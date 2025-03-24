@@ -145,7 +145,7 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
             <a href="https://x.com/TxEdInfo" target="_blank" style="text-decoration: none; margin-right: 8px;">
                 <img src="logo-black.png" alt="X.com" width="16" height="16">
             </a>
-            <a href="https://github.com/txedinfo" target="_blank" style="text-decoration: none;">
+            <a href="https://github.com/txedinfo/SPEDFundingGap" target="_blank" style="text-decoration: none;">
                 <img src="GitHub_Logo.png" alt="github.com" height="16">
             </a>
         </div>
@@ -337,5 +337,5 @@ if __name__ == "__main__":
     generate_sped_funding_gap_html(
         "/Users/adpena/PycharmProjects/OSOD/OSOD 2024 Report_2022-2023 SPED Funding Gap.xlsx",
         "index.html",
-        development_mode=True
+        development_mode=False
     )
