@@ -155,7 +155,7 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
         The following analysis reflects the special education (SPED) funding gap experienced by Texas public school districts and charter schools in the 2022-2023 school year using the latest final data publicly available from the Texas Education Agency (see below for citations). The final data for the 2023-2024 school year will be available in Spring 2025 and this analysis will be updated at that time.
     </p>
     <p>
-        The SPED funding gap represents the difference between what districts spend on SPED (GF Students with Disabilities-PICs 23,33,43) and the funding they receive from the state (23-Special Education Adjusted Allotment 48.102).
+        The SPED funding gap represents the difference between what districts spent on SPED (GF Students with Disabilities-PICs 23,33,43) and the funding they received from the state (23-Special Education Adjusted Allotment 48.102).
     </p>
     <p>
         The full dataset can be downloaded here: <a href="https://docs.google.com/spreadsheets/d/1VFcxNdg7vcTgO1QTFSPHkAsh0L09omZJ/edit?usp=sharing&amp;ouid=110674123000325431228&amp;rtpof=true&amp;sd=true" target="_blank">Google Sheets</a>
