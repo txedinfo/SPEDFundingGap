@@ -3,7 +3,6 @@ import os
 import subprocess
 import textwrap
 
-
 def generate_sped_funding_gap_html(input_excel, output_html, development_mode=False):
     xls = pd.ExcelFile(input_excel)
     sheet1_df = xls.parse('Sheet1')
@@ -32,10 +31,8 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
     districts_sorted = sheet1_sorted[columns_to_keep].rename(columns=column_rename)
     charters_sorted = sheet2_sorted[columns_to_keep].rename(columns=column_rename)
 
-    districts_sorted["SPED Funding Gap Raw"] = districts_sorted["SPED Funding Gap"].replace(r'[\$,]', '', regex=True).astype(
-        float)
-    charters_sorted["SPED Funding Gap Raw"] = charters_sorted["SPED Funding Gap"].replace(r'[\$,]', '', regex=True).astype(
-        float)
+    districts_sorted["SPED Funding Gap Raw"] = districts_sorted["SPED Funding Gap"].replace(r'[\$,]', '', regex=True).astype(float)
+    charters_sorted["SPED Funding Gap Raw"] = charters_sorted["SPED Funding Gap"].replace(r'[\$,]', '', regex=True).astype(float)
 
     def disambiguate_names(df):
         df["District Number"] = df["District Number"].apply(lambda x: f"'{int(x):06d}")
@@ -76,14 +73,10 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
     charters_net_gap = charters_surplus_total + charters_deficit_total
     total_net_gap = districts_net_gap + charters_net_gap
 
-    districts_surplus_pct = (districts_surplus_count / (districts_surplus_count + districts_deficit_count) * 100) if (
-                                                                                                                                 districts_surplus_count + districts_deficit_count) > 0 else 0
-    districts_deficit_pct = (districts_deficit_count / (districts_surplus_count + districts_deficit_count) * 100) if (
-                                                                                                                                 districts_surplus_count + districts_deficit_count) > 0 else 0
-    charters_surplus_pct = (charters_surplus_count / (charters_surplus_count + charters_deficit_count) * 100) if (
-                                                                                                                             charters_surplus_count + charters_deficit_count) > 0 else 0
-    charters_deficit_pct = (charters_deficit_count / (charters_surplus_count + charters_deficit_count) * 100) if (
-                                                                                                                             charters_surplus_count + charters_deficit_count) > 0 else 0
+    districts_surplus_pct = (districts_surplus_count / (districts_surplus_count + districts_deficit_count) * 100) if (districts_surplus_count + districts_deficit_count) > 0 else 0
+    districts_deficit_pct = (districts_deficit_count / (districts_surplus_count + districts_deficit_count) * 100) if (districts_surplus_count + districts_deficit_count) > 0 else 0
+    charters_surplus_pct = (charters_surplus_count / (charters_surplus_count + charters_deficit_count) * 100) if (charters_surplus_count + charters_deficit_count) > 0 else 0
+    charters_deficit_pct = (charters_deficit_count / (charters_surplus_count + charters_deficit_count) * 100) if (charters_surplus_count + charters_deficit_count) > 0 else 0
 
     def format_currency(val):
         val = int(val)
@@ -113,7 +106,7 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
         <style>
-            body {{ font-family: Arial, sans-serif; margin: 40px; }}
+            body {{ font-family: Helvetica, sans-serif; margin: 40px auto; padding-left: 40px; padding-right: 40px; max-width: 900px; }}
             table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px; }}
             th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
             th {{ background-color: #f4f4f4; }}
@@ -133,15 +126,32 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
                     font-size: 12px;
                     padding: 4px;
                 }}
+                .logo-container {{
+                    justify-content: center;
+                }}
             }}
         </style>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>
+            // Note: changes to the plugin code is not reflected to the chart, because the plugin is loaded at chart construction time and editor changes only trigger an chart.update().
+            const plugin = {{
+              id: 'customCanvasBackgroundColor',
+              beforeDraw: (chart, args, options) => {{
+                const {{ctx}} = chart;
+                ctx.save();
+                ctx.globalCompositeOperation = 'destination-over';
+                ctx.fillStyle = options.color || 'white';
+                ctx.fillRect(0, 0, chart.width, chart.height);
+                ctx.restore();
+              }}
+            }};
+        </script>
     </head>
     <body>
 
     <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="margin: 0;">Special Education Funding Gap (2022–2023)</h1>
-        <div style="padding: 4px;">
+        <h1 style="margin: 0;">2022-2023 Special Education Funding Gap</h1>
+        <div class="logo-container" style="padding: 4px; display: flex; justify-content: flex-end; align-items: center;">
             <a href="https://x.com/TxEdInfo" target="_blank" style="text-decoration: none; margin-right: 8px;">
                 <img src="logo-black.png" alt="X.com" width="16" height="16">
             </a>
@@ -152,16 +162,16 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
     </div>
 
     <p>
-        The following analysis reflects the special education (SPED) funding gap experienced by Texas public school districts and charter schools in the 2022-2023 school year using the latest final data publicly available from the Texas Education Agency (see below for citations). The final data for the 2023-2024 school year will be available in Spring 2025 and this analysis will be updated at that time.
+        The following analysis reflects the special education (SPED) funding gap for Texas public school districts and charter schools for the 2022-2023 school year using the latest final data publicly available from the Texas Education Agency (see below for citations). The final data for the 2023-2024 school year will be available in Spring 2025 and this analysis will be updated at that time.
     </p>
     <p>
-        The SPED funding gap represents the difference between what districts spent on SPED (GF Students with Disabilities-PICs 23,33,43) and the funding they received from the state (23-Special Education Adjusted Allotment 48.102).
+        The SPED funding gap reflects the difference between what districts spend on SPED (GF Students with Disabilities-PICs 23,33,43) and the funding they receive from the state (23-Special Education Adjusted Allotment 48.102).
     </p>
     <p>
         The full dataset can be downloaded here: <a href="https://docs.google.com/spreadsheets/d/1VFcxNdg7vcTgO1QTFSPHkAsh0L09omZJ/edit?usp=sharing&amp;ouid=110674123000325431228&amp;rtpof=true&amp;sd=true" target="_blank">Google Sheets</a>
     </p>
 
-    <h3>Summary Statistics</h3>
+    <h3 style="margin-top: 30px;">Summary Statistics</h3>
     <ul>
         <li><strong>Districts</strong>
           <ul>
@@ -182,8 +192,8 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
         <li><strong>Total Net Funding Gap:</strong> <span style="background-color:#f8d7da;">{"-$" + format(abs(int(total_net_gap)), ',') if total_net_gap < 0 else "$" + format(int(total_net_gap), ',')}</span></li>
     </ul>
 
-    <div style="border: 1px solid lightgrey; border-radius: 4px; padding: 15px">    
-        <h2 style="padding-top: 0; margin-top: 0;">Districts by SPED Funding Gap</h2>
+    <div style="border: 1px solid lightgrey; border-radius: 4px; padding: 15px; margin-top: 30px;">    
+        <!-- The chart title is now set via Chart.js, so no h2 here -->
         <!-- Chart container for Districts -->
         <div id="districts-chart-container" style="margin-bottom: 20px;"></div>
         <div class="table-container">
@@ -192,7 +202,7 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
     </div>
 
     <div style="border: 1px solid lightgrey; border-radius: 4px; padding: 15px; margin-top: 30px;">    
-        <h2 style="padding-top: 0; margin-top: 0;">Charters by SPED Funding Gap</h2>
+        <!-- The chart title is now set via Chart.js, so no h2 here -->
         <!-- Chart container for Charters -->
         <div id="charters-chart-container" style="margin-bottom: 20px;"></div>
         <div class="table-container">
@@ -200,7 +210,7 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
         </div>
     </div>
 
-    <h3>Sources of data:</h3>
+    <h3 style="margin-top: 30px;">Sources of data:</h3>
     <p>
         <ul>
             <li>District expenditures: <a href="https://rptsvr1.tea.texas.gov/school.finance/forecasting/financial_reports/2223_FinActRep.html" target="_blank">2022-2023 PEIMS Financial Standard Reports,</a> GF Students with Disabilities (PICs 23,33,43)</li>
@@ -263,6 +273,7 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
                 }}
                 window.chartInstances[tableId] = new Chart(ctx, {{
                     type: 'bar',
+                    plugins: [plugin],
                     data: {{
                         labels: labels,
                         datasets: [
@@ -291,13 +302,24 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
                             }}
                         }},
                         plugins: {{
+                            customCanvasBackgroundColor: {{
+                                color: 'white',
+                            }},
+                            title: {{
+                                display: true,
+                                text: tableId.indexOf("districts") !== -1 ? "Districts by 2022-2023 SPED Funding Gap" : "Charters by 2022-2023 SPED Funding Gap",
+                                color: 'black',
+                                font: {{
+                                    size: 20
+                                }}
+                            }},
                             legend: {{
                                 display: true,
                                 labels: {{
                                     boxWidth: 12
                                 }}
-                            }}
-                        }}
+                            }},
+                        }},
                     }}
                 }});
             }}
@@ -337,5 +359,5 @@ if __name__ == "__main__":
     generate_sped_funding_gap_html(
         "/Users/adpena/PycharmProjects/OSOD/OSOD 2024 Report_2022-2023 SPED Funding Gap.xlsx",
         "index.html",
-        development_mode=False
+        development_mode=True
     )
