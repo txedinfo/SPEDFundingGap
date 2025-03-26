@@ -306,7 +306,7 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
             }}
 
             // Create a canvas for the chart and a download button
-            chartContainer.innerHTML = '<canvas id="' + tableId + '-chart" style="height:400px; max-height:400px;"></canvas><br><button id="' + tableId + '-download">Download Chart</button>';            const ctx = document.getElementById(tableId + '-chart').getContext('2d');
+            chartContainer.innerHTML = '<canvas id="' + tableId + '-chart" style="max-height:400px; min-height: 400px;"></canvas><br><button id="' + tableId + '-download">Download Chart</button>';            const ctx = document.getElementById(tableId + '-chart').getContext('2d');
 
             function updateChart() {{
                 let currentData = dt.rows({{ page: 'current' }}).data().toArray();
@@ -340,7 +340,7 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
                         ]
                     }},
                     options: {{
-                        maintainAspectRatio: true,
+                        maintainAspectRatio: false,
                         animation: {{
                             duration: 1000,
                             easing: 'easeOutQuart'
