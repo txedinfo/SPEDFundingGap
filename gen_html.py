@@ -106,7 +106,10 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css"/>
         <style>
-            body {{ font-family: Helvetica, sans-serif; margin: 40px auto; padding-left: 40px; padding-right: 40px; max-width: 900px; }}
+            body {{ font-family: Helvetica, sans-serif; margin: 40px auto; padding-left: 40px; padding-right: 40px; max-width: 900px; opacity: 0; transition: opacity 0.4s ease-in; }}
+            body.loaded {{
+                opacity: 1;
+            }}
             table {{ width: 100%; border-collapse: collapse; margin-bottom: 20px; }}
             th, td {{ border: 1px solid #ddd; padding: 8px; text-align: left; }}
             th {{ background-color: #f4f4f4; }}
@@ -150,6 +153,23 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
                     padding: 4px;
                 }}
                 /* Duplicate logo-container styles removed */
+            }}
+            
+            .summary-stats li {{
+                opacity: 0;
+                transform: translateY(20px);
+                animation: slideUp 0.5s ease forwards;
+                animation-play-state: paused;
+            }}
+            .summary-stats li:nth-child(1) {{ animation-delay: 0.1s; }}
+            .summary-stats li:nth-child(2) {{ animation-delay: 0.2s; }}
+            .summary-stats li:nth-child(3) {{ animation-delay: 0.3s; }}
+            
+            @keyframes slideUp {{
+                to {{
+                    opacity: 1;
+                    transform: translateY(0);
+                }}
             }}
         </style>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -203,7 +223,7 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
     </p>
 
     <h3 style="margin-top: 30px;">Summary Statistics</h3>
-    <ul>
+    <ul class="summary-stats">
         <li><strong>Districts</strong>
           <ul>
             <li>With surplus: {districts_surplus_count} ({districts_surplus_pct:.1f}%)</li>
@@ -286,8 +306,7 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
             }}
 
             // Create a canvas for the chart and a download button
-            chartContainer.innerHTML = '<canvas id="' + tableId + '-chart" style="height:75px;"></canvas><br><button id="' + tableId + '-download">Download Chart</button>';
-            const ctx = document.getElementById(tableId + '-chart').getContext('2d');
+            chartContainer.innerHTML = '<canvas id="' + tableId + '-chart" style="height:400px; max-height:400px;"></canvas><br><button id="' + tableId + '-download">Download Chart</button>';            const ctx = document.getElementById(tableId + '-chart').getContext('2d');
 
             function updateChart() {{
                 let currentData = dt.rows({{ page: 'current' }}).data().toArray();
@@ -321,8 +340,11 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
                         ]
                     }},
                     options: {{
-                        // responsive: true,
-                        // maintainAspectRatio: false,
+                        maintainAspectRatio: true,
+                        animation: {{
+                            duration: 1000,
+                            easing: 'easeOutQuart'
+                        }},
                         scales: {{
                             y: {{
                                 ticks: {{
@@ -371,7 +393,14 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
         renderDataTable({districts_json}, 'districts-table-container');
         renderDataTable({charters_json}, 'charters-table-container');
     </script>
-
+    <script>
+      window.addEventListener("load", () => {{
+        document.body.classList.add("loaded");
+      }});
+        document.querySelectorAll(".summary-stats li").forEach(el => {{
+            el.style.animationPlayState = 'running';
+        }});
+    </script>
     </body>
     </html>
     """)
