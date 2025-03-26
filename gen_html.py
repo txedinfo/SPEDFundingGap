@@ -121,14 +121,35 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
                 overflow-x: auto;
                 width: 100%;
             }}
+
+            .logo-container {{
+                padding: 4px;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+            }}
+
+            .logo-container a, .logo-container span {{
+                display: flex;
+                align-items: center;
+                text-decoration: none;
+            }}
+
+            .logo-container img {{
+                display: block;
+                height: 16px;
+            }}
+
+            .logo-container a:last-child {{
+                font-size: 14px;
+            }}
+
             @media screen and (max-width: 600px) {{
                 table, th, td {{
                     font-size: 12px;
                     padding: 4px;
                 }}
-                .logo-container {{
-                    justify-content: center;
-                }}
+                /* Duplicate logo-container styles removed */
             }}
         </style>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -158,6 +179,16 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
             <a href="https://github.com/txedinfo/SPEDFundingGap" target="_blank" style="text-decoration: none;">
                 <img src="GitHub_Logo.png" alt="github.com" height="16">
             </a>
+            <span id="contact-link"></span>
+            <script>
+              (function() {{
+                const user = "txpubliceducationinfo";
+                const domain = "gmail.com";
+                const email = user + "@" + domain;
+                const link = `<a href="mailto:${{email}}" style="margin-left: 8px; font-size: 14px; text-decoration: none;">Contact</a>`;
+                document.getElementById("contact-link").innerHTML = link;
+              }})();
+            </script>
         </div>
     </div>
 
