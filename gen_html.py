@@ -226,16 +226,16 @@ def generate_sped_funding_gap_html(input_excel, output_html, development_mode=Fa
     <ul class="summary-stats">
         <li><strong>Districts</strong>
           <ul>
-            <li>With surplus: {districts_surplus_count} ({districts_surplus_pct:.1f}%)</li>
             <li>With deficit: {districts_deficit_count} ({districts_deficit_pct:.1f}%)</li>
+            <li>No deficit: {districts_surplus_count} ({districts_surplus_pct:.1f}%)</li>
             <li>Net Funding Gap: {"-$" + format(abs(int(districts_net_gap)), ',') if districts_net_gap < 0 else "$" + format(int(districts_net_gap), ',')}</li>
           </ul>
         </li>
         <br/>
         <li><strong>Charters</strong>
           <ul>
-            <li>With surplus: {charters_surplus_count} ({charters_surplus_pct:.1f}%)</li>
             <li>With deficit: {charters_deficit_count} ({charters_deficit_pct:.1f}%)</li>
+            <li>No deficit: {charters_surplus_count} ({charters_surplus_pct:.1f}%)</li>
             <li>Net Funding Gap: {"-$" + format(abs(int(charters_net_gap)), ',') if charters_net_gap < 0 else "$" + format(int(charters_net_gap), ',')}</li>
           </ul>
         </li>
@@ -419,5 +419,5 @@ if __name__ == "__main__":
     generate_sped_funding_gap_html(
         "/Users/adpena/PycharmProjects/OSOD/OSOD 2024 Report_2022-2023 SPED Funding Gap.xlsx",
         "index.html",
-        development_mode=True
+        development_mode=False
     )
